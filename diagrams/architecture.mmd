@@ -1,0 +1,13 @@
+
+
+flowchart TD
+    A["Three predefined music profiles"] --> B["main.py"]
+    C["songs.csv: Music dataset"] --> D["load_songs()"]
+    D --> E["Song data"]
+    B --> F["recommend_songs()"]
+    E --> F
+    F --> G["Score each song using score_song()"]
+    G --> H["Calculate genre, mood, and energy scores"]
+    H --> I["Rank songs from highest to lowest"]
+    I --> J["Select top 5 songs for each profile"]
+    J --> K["Display song titles, scores, and reasons"]

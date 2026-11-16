@@ -181,3 +181,9 @@ Read and complete `model_card.md`:
 [**Model Card**](model_card.md)
 
 I learned that music recommendation systems use information about songs and users to decide what to recommend. I was surprised that changing the scoring points could change the rankings. I also learned that recommendations are not always perfect because a small dataset or limited features can cause some songs to be overlooked. Using AI helped me build the program, but I still needed to test the results and check for problems.
+
+
+
+## System Architecture
+
+This diagram shows how my music recommender loads songs, scores them based on music preferences, and displays the top five recommendations for each profile.
