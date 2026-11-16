@@ -18,6 +18,8 @@ The architecture diagram is saved in `diagrams/architecture.mmd`.
 
 ![System Architecture](assets/architecture.png)
 
+My system loads songs from a CSV file and checks for invalid data before recommending songs. It compares valid songs with three example user profiles, calculates scores, and displays the top five recommendations. Logging records invalid information, and automated tests help check the system's reliability.
+
 ## Setup Instructions
 
 To run this project:
