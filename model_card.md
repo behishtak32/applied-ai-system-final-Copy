@@ -44,3 +44,21 @@ One suggestion I accepted was using sorted() to rank songs from highest to lowes
 One suggestion I revised was giving genre and mood equal points. I experimented with lowering the genre points and increasing the energy points to see how the recommendations changed.
 
 My system also has limitations. It only has 18 songs and uses a few features to recommend music. It may suggest similar songs repeatedly or miss good songs from other genres. In the future, I would add more music and improve the scoring system.
+
+1. Limitations and Biases
+
+My music recommender only has 18 songs, so it cannot represent everyone's music taste. It mainly uses genre, mood, and energy to recommend songs. Some genres have more songs than others, which might make the recommendations unfair. It can also recommend similar songs repeatedly instead of introducing different music.
+
+2. Possible Misuse and Prevention
+
+Someone might use this system to make recommendations seem more accurate than they really are. To prevent this, I would clearly explain that it is a small classroom project and not a professional music recommendation system. I would also show users why each song was recommended.
+
+3. What Surprised Me During Testing
+
+I was surprised that all 8 automated tests passed, even though my system still has limitations. This showed me that a program can work correctly but still give recommendations that are not perfect for every user. I also learned that changing the scoring points can affect which songs rank higher.
+
+4. My Collaboration With AI
+
+I used GitHub Copilot to help me write code, understand functions, and test my program. One suggestion I accepted was using sorted() to rank songs from highest to lowest score because it was simple and did not change the original list.
+
+One suggestion I changed was giving genre and mood equal points. I experimented with reducing genre points from 1.5 to 0.75 and increasing energy points from 1 to 2. I wanted to see whether focusing more on energy would give different recommendations. This helped me understand that AI suggestions are useful, but I still need to make my own decisions and test them.

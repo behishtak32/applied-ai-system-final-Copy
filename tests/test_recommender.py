@@ -2,6 +2,7 @@ from pathlib import Path
 
 import pytest
 
+import src.main as main_module
 from src.recommender import (
     Recommender,
     Song,
@@ -110,6 +111,61 @@ def test_recommendations_return_only_requested_number():
 
     assert len(recommendations) == 2
     assert [song["title"] for song, _, _ in recommendations] == ["First", "Second"]
+
+
+def test_load_songs_skips_invalid_rows_and_logs_warnings(tmp_path, caplog):
+    csv_path = tmp_path / "songs.csv"
+    csv_path.write_text(
+        "id,title,artist,genre,mood,energy,tempo_bpm,valence,danceability,acousticness\n"
+        "1,Valid Song,Artist,pop,happy,0.8,120,0.5,0.5,0.5\n"
+        "2,,Artist,pop,happy,0.8,120,0.5,0.5,0.5\n"
+        "3,Missing Mood,Artist,pop,,0.8,120,0.5,0.5,0.5\n"
+        "4,Out of Range,Artist,pop,happy,1.2,120,0.5,0.5,0.5\n"
+        "5,Invalid Energy,Artist,pop,happy,high,120,0.5,0.5,0.5\n",
+        encoding="utf-8",
+    )
+
+    songs = load_songs(str(csv_path))
+
+    assert [song["title"] for song in songs] == ["Valid Song"]
+    warnings = [record for record in caplog.records if record.levelname == "WARNING"]
+    assert len(warnings) == 4
+    assert all("Skipping invalid song row" in record.message for record in warnings)
+
+
+@pytest.mark.parametrize(
+    "user_prefs",
+    [
+        {"genre": "", "mood": "happy", "energy": 0.5},
+        {"genre": "pop", "mood": " ", "energy": 0.5},
+        {"genre": "pop", "mood": "happy", "energy": -0.1},
+        {"genre": "pop", "mood": "happy", "energy": 1.1},
+        {"genre": "pop", "mood": "happy", "energy": "0.5"},
+        {"genre": "pop", "mood": "happy"},
+    ],
+)
+def test_recommendations_reject_invalid_user_preferences(user_prefs):
+    with pytest.raises(ValueError):
+        recommend_songs(user_prefs, [])
+
+
+def test_main_logs_invalid_profile_and_continues(monkeypatch, caplog):
+    monkeypatch.setattr(main_module, "load_songs", lambda _: [])
+    attempted_profiles = []
+
+    def fake_recommend_songs(user_prefs, songs, k):
+        attempted_profiles.append(user_prefs)
+        if user_prefs["genre"] == "pop":
+            raise ValueError("invalid test profile")
+        return []
+
+    monkeypatch.setattr(main_module, "recommend_songs", fake_recommend_songs)
+
+    main_module.main()
+
+    assert len(attempted_profiles) == 3
+    assert "Skipping invalid profile 'Profile 1: High-Energy Pop'" in caplog.text
+
 
 def make_small_recommender() -> Recommender:
     songs = [

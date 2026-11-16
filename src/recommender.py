@@ -1,5 +1,7 @@
 import csv
-from typing import List, Dict, Tuple, Optional
+import logging
+import math
+from typing import List, Dict, Tuple
 from dataclasses import dataclass
 
 @dataclass
@@ -50,7 +52,7 @@ class Recommender:
         return "Explanation placeholder"
 
 def load_songs(csv_path: str) -> List[Dict]:
-    """Read songs from a CSV file and convert their numeric fields."""
+    """Read valid songs from a CSV file and convert their numeric fields."""
     numeric_columns = (
         "energy",
         "tempo_bpm",
@@ -60,15 +62,52 @@ def load_songs(csv_path: str) -> List[Dict]:
     )
     songs = []
     with open(csv_path, newline="", encoding="utf-8") as csv_file:
-        for song in csv.DictReader(csv_file):
-            song["id"] = int(song["id"])
-            for column in numeric_columns:
-                song[column] = float(song[column])
+        for row_number, song in enumerate(csv.DictReader(csv_file), start=2):
+            try:
+                for column in ("title", "genre", "mood"):
+                    value = song.get(column)
+                    if not isinstance(value, str) or not value.strip():
+                        raise ValueError(f"missing or empty {column}")
+
+                song["id"] = int(song["id"])
+                for column in numeric_columns:
+                    song[column] = float(song[column])
+                    if not math.isfinite(song[column]):
+                        raise ValueError(f"{column} must be a finite number")
+
+                if not 0 <= song["energy"] <= 1:
+                    raise ValueError("energy must be between 0 and 1")
+            except (KeyError, TypeError, ValueError) as error:
+                logging.warning("Skipping invalid song row %d: %s", row_number, error)
+                continue
+
             songs.append(song)
     return songs
 
+
+def _validate_user_preferences(user_prefs: Dict) -> None:
+    """Raise ValueError when required preferences are missing or invalid."""
+    if not isinstance(user_prefs, dict):
+        raise ValueError("User preferences must be a dictionary")
+
+    for column in ("genre", "mood"):
+        value = user_prefs.get(column)
+        if not isinstance(value, str) or not value.strip():
+            raise ValueError(f"User preference '{column}' must not be empty")
+
+    energy = user_prefs.get("energy")
+    if (
+        isinstance(energy, bool)
+        or not isinstance(energy, (int, float))
+        or not 0 <= energy <= 1
+        or not math.isfinite(energy)
+    ):
+        raise ValueError("User preference 'energy' must be a number between 0 and 1")
+
+
 def score_song(user_prefs: Dict, song: Dict) -> Tuple[float, List[str]]:
     """Score one song against the user's genre, mood, and energy preferences."""
+    _validate_user_preferences(user_prefs)
     score = 0.0
     reasons = []
 
@@ -88,6 +127,7 @@ def score_song(user_prefs: Dict, song: Dict) -> Tuple[float, List[str]]:
 
 def recommend_songs(user_prefs: Dict, songs: List[Dict], k: int = 5) -> List[Tuple[Dict, float, str]]:
     """Return the top k scored songs with explanations."""
+    _validate_user_preferences(user_prefs)
     scored_songs = []
     for song in songs:
         score, reasons = score_song(user_prefs, song)

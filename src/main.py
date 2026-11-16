@@ -9,11 +9,24 @@ You will implement the functions in recommender.py:
 - recommend_songs
 """
 
+import logging
+
 from src.recommender import load_songs, recommend_songs
 
 
 def main() -> None:
-    songs = load_songs("data/songs.csv")
+    logging.basicConfig(
+        level=logging.INFO,
+        format="%(levelname)s: %(message)s",
+    )
+    logger = logging.getLogger(__name__)
+
+    try:
+        songs = load_songs("data/songs.csv")
+    except OSError:
+        logger.exception("Could not load song data from data/songs.csv")
+        raise
+
     print(f"Loaded songs: {len(songs)}")
 
     profiles = {
@@ -35,7 +48,11 @@ def main() -> None:
     }
 
     for profile_name, user_prefs in profiles.items():
-        recommendations = recommend_songs(user_prefs, songs, k=5)
+        try:
+            recommendations = recommend_songs(user_prefs, songs, k=5)
+        except ValueError as error:
+            logger.error("Skipping invalid profile '%s': %s", profile_name, error)
+            continue
 
         print(f"\n{profile_name}")
         print("-" * len(profile_name))

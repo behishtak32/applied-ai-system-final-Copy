@@ -94,6 +94,11 @@ One trade-off is that the system does not learn from real listening habits. It d
 
 ### Automated Testing Results
 
+
+Reasons: energy closeness (+1.94)
+5. Rooftop Lights (Score: 1.82)
+   Reasons: energy closeness (+1.82)
+
 I used pytest to check whether my music recommender works correctly. I ran 8 tests, and all 8 passed.
 
 | Test | Result |
@@ -108,8 +113,109 @@ I used pytest to check whether my music recommender works correctly. I ran 8 tes
 
 Summary: 8 out of 8 tests passed, with no failures. The tests showed that my program correctly loads songs, calculates scores, and ranks recommendations. I also learned that running tests with python -m pytest worked better in my environment than using pytest directly.
 
+
+### Reliability and Testing Results
+
+I added validation and logging to make my music recommender more reliable. The program now checks for missing song information and invalid energy values. Invalid songs are skipped, and invalid user profiles are rejected without stopping the other profiles.
+
+I tested the program using pytest. All 16 tests passed with no failures.
+
+| Test Area | Result |
+|---|---|
+| Loading and validating song data | Pass |
+| Genre, mood, and energy scoring | Pass |
+| Ranking recommendations | Pass |
+| Rejecting invalid user preferences | Pass |
+| Skipping invalid song rows | Pass |
+| Continuing after an invalid profile | Pass |
+
+To run the tests:
+
+```powershell
+python -m pytest -q tests\test_recommender.py
+```
+
+Test result:
+
+```text
+16 passed, 0 failed
+```
+
+This showed me that my program can handle both normal and invalid inputs without producing misleading recommendations.
+
 ## Reflection
 
 This project helped me understand how recommendation systems use information to make suggestions. I learned that changing the scoring rules can affect which songs appear first. It also taught me how important testing is when building an AI-related system.
 
 For a more detailed discussion of responsible AI, limitations, and my use of AI coding tools, see [Model Card](model_card.md).
+
+
+## Reproducible Execution Evidence
+
+### How to Run the Project
+
+Run the following command from the main project folder:
+
+```powershell
+python -m src.main
+```
+
+This runs the music recommender using three predefined user profiles.
+
+### Example Inputs and Outputs
+
+The following are examples from my original scoring system.
+
+**Example 1: High-Energy Pop**
+
+Input: Genre = pop, Mood = happy, Energy = 0.9
+
+```text
+1. Sunrise City (Score: 3.92)
+   Reasons: genre match (+1.5), mood match (+1.5), energy closeness (+0.92)
+```
+
+**Example 2: Chill Lofi**
+
+Input: Genre = lofi, Mood = chill, Energy = 0.2
+
+```text
+1. Library Rain (Score: 3.85)
+   Reasons: genre match (+1.5), mood match (+1.5), energy closeness (+0.85)
+```
+
+**Example 3: Deep Intense Rock**
+
+Input: Genre = rock, Mood = intense, Energy = 0.85
+
+```text
+1. Storm Runner (Score: 3.94)
+   Reasons: genre match (+1.5), mood match (+1.5), energy closeness (+0.94)
+```
+
+### Automated Testing
+
+To run the tests:
+
+```powershell
+python -m pytest -q tests\test_recommender.py
+```
+
+Copilot reported the following result:
+
+```text
+8 passed, 0 failed
+```
+
+The tests checked CSV loading, genre and mood scoring, energy similarity, recommendation ranking, and the number of recommendations returned.
+
+### Reliability and Guardrails
+
+My program explains why each song receives its score. I also tested different user preferences and changed the scoring weights to see how the recommendations changed.
+
+One limitation is that the recommender has only 18 songs and may repeatedly suggest similar music. It does not have a confidence model or guarantee that users will enjoy its recommendations.
+
+
+What This Project Says About Me as an AI Engineer
+
+This project shows that I can build, test, and explain a simple AI recommendation system. I learned how to use data and scoring rules to make recommendations and check whether the results make sense. I also used GitHub Copilot to help with coding while making my own decisions and testing the results. This project helped me understand the importance of accuracy, testing, and responsible AI.
