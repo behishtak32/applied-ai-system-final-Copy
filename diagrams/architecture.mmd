@@ -1,21 +1,26 @@
 
 
-
 flowchart TD
     A["Three predefined user profiles"] --> B["main.py"]
-    C["songs.csv: Music dataset"] --> D["load_songs()"]
-    D --> E["Song data"]
-    B --> F["recommend_songs()"]
-    E --> F
-    F --> G["score_song() for each song"]
-    G --> H["Calculate genre, mood, and energy scores"]
-    H --> I["Rank songs from highest to lowest"]
-    I --> J["Top 5 recommendations per profile"]
-    J --> K["Display titles, scores, and reasons"]
+    C["songs.csv: 18 songs"] --> D["load_songs()"]
+    D --> E{"Valid song data?"}
+    E -->|Yes| F["Validated songs"]
+    E -->|No| G["Skip invalid row and log warning"]
 
-    K --> L["Human review: Check if results make sense"]
-    K --> M["Testing: Compare results for different profiles"]
-    L --> N["Evaluate strengths and limitations"]
-    M --> N
-    N -.-> O["Improve scoring rules or dataset"]
-    O -.-> F
+    B --> H{"Valid user preferences?"}
+    H -->|No| I["Log error and skip profile"]
+    H -->|Yes| J["recommend_songs()"]
+    F --> J
+
+    J --> K["score_song() for each song"]
+    K --> L["Genre, mood, and energy scoring"]
+    L --> M["Rank songs highest to lowest"]
+    M --> N["Top 5 recommendations"]
+    N --> O["Display songs, scores, and reasons"]
+
+    O --> P["Human review of recommendations"]
+    O --> Q["Automated tests: pytest"]
+    P --> R["Evaluate reliability and limitations"]
+    Q --> R
+    R -.-> S["Improve data and scoring rules"]
+
