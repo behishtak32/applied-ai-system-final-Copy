@@ -37,4 +37,10 @@ When I compared High-Energy Pop and Chill Lofi, I noticed that they recommended 
 In the future, I would add more songs and genres. I would also include tempo, favorite artists, and listening history to improve the recommendations. I would like the program to learn from songs users like or skip.
 
 ## 9. Personal Reflection
-I learned how music recommendation systems use data to suggest songs based on what users like. My biggest learning moment was understanding how changing the scoring points could change the recommendations. Using AI tools helped me write the code and understand how the program works. However, I still needed to run the program and check for errors. I was surprised that a simple scoring system could recommend songs in a way that feels similar to real music apps. If I continued this project, I would add more songs and improve the recommendations based on users' listening habits.
+I used GitHub Copilot to help me understand the code and build my music recommender. It helped me write functions, fix errors, and improve my program. I still checked the code by running it and comparing the recommendations.
+
+One suggestion I accepted was using sorted() to rank songs from highest to lowest score. This made it easier to choose the top five recommendations.
+
+One suggestion I revised was giving genre and mood equal points. I experimented with lowering the genre points and increasing the energy points to see how the recommendations changed.
+
+My system also has limitations. It only has 18 songs and uses a few features to recommend music. It may suggest similar songs repeatedly or miss good songs from other genres. In the future, I would add more music and improve the scoring system.
