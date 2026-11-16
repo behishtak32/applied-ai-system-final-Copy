@@ -92,11 +92,21 @@ One trade-off is that the system does not learn from real listening habits. It d
 
 ## Testing Summary
 
-I tested the program with High-Energy Pop, Chill Lofi, and Deep Intense Rock profiles. The results showed that different preferences could produce different song rankings.
+### Automated Testing Results
 
-I also experimented with changing the scoring weights. I reduced the importance of genre and increased the importance of energy.
+I used pytest to check whether my music recommender works correctly. I ran 8 tests, and all 8 passed.
 
-One weakness I found is that songs can still rank highly even when the genre does not match. The small dataset also limits the variety of recommendations.
+| Test | Result |
+|---|---|
+| Loading 18 songs from CSV | Pass |
+| Genre scoring | Pass |
+| Mood scoring | Pass |
+| Energy similarity | Pass |
+| Sorting recommendations by score | Pass |
+| Returning the requested number of songs | Pass |
+| Two existing tests | Pass (2 tests) |
+
+Summary: 8 out of 8 tests passed, with no failures. The tests showed that my program correctly loads songs, calculates scores, and ranks recommendations. I also learned that running tests with python -m pytest worked better in my environment than using pytest directly.
 
 ## Reflection
 
